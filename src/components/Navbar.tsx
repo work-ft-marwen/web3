@@ -1,71 +1,89 @@
-import { useState, useEffect } from 'react';
-import { Bot, Menu, X } from 'lucide-react';
-import { motion } from 'framer-motion';
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  return <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/80 backdrop-blur-lg py-3 shadow-lg' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+// 1. MODIFICATION : Importer votre nouveau logo
+import aibotLogo from "../assets/aibot-logo.png"; 
+
+const Navbar = () => {
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  const toggleNavbar = () => {
+    setMobileDrawerOpen(!mobileDrawerOpen);
+  };
+
+  return (
+    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-neutral-700/80">
+      <div className="container px-4 mx-auto relative lg:text-sm">
         <div className="flex justify-between items-center">
-          <motion.div initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          duration: 0.5
-        }} className="flex items-center">
-            <Bot className="h-8 w-8 text-blue-400 mr-2" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent" style={{
-            fontFamily: 'Orbitron, sans-serif'
-          }}>Aibotautomations</span>
-          </motion.div>
-          
-          <div className="hidden md:flex space-x-8">
-            {['Features', 'How It Works', 'Pricing', 'Testimonials', 'Contact'].map(item => <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="text-gray-300 hover:text-white transition-colors font-medium">
-                {item}
-              </a>)}
+          <div className="flex items-center flex-shrink-0">
+            {/* 2. MODIFICATION : Remplacer l'ancienne image par la nouvelle */}
+            <img className="h-10 w-10 mr-2 rounded-full" src={aibotLogo} alt="AIBot Logo" />
+            
+            {/* 3. MODIFICATION : Changer le texte à côté du logo */}
+            <span className="text-xl tracking-tight">AIBots</span>
           </div>
-          
-          <div className="hidden md:flex">
-            <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2 px-6 rounded-full transition-all shadow-lg hover:shadow-blue-500/20">Book Your Demo</button>
+          <ul className="hidden lg:flex ml-14 space-x-12">
+            <li>
+              <a href="#">Features</a>
+            </li>
+            <li>
+              <a href="#">Workflow</a>
+            </li>
+            <li>
+              <a href="#">Pricing</a>
+            </li>
+            <li>
+              <a href="#">Testimonials</a>
+            </li>
+          </ul>
+          <div className="hidden lg:flex justify-center space-x-12 items-center">
+            <a href="#" className="py-2 px-3 border rounded-md">
+              Sign In
+            </a>
+            <a
+              href="#"
+              className="bg-gradient-to-r from-orange-500 to-orange-800 py-2 px-3 rounded-md"
+            >
+              Create an account
+            </a>
           </div>
-          
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-300 hover:text-white">
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <div className="lg:hidden md:flex flex-col justify-end">
+            <button onClick={toggleNavbar}>
+              {mobileDrawerOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
-      </div>
-      
-      {/* Mobile menu */}
-      {isOpen && <motion.div initial={{
-      opacity: 0,
-      height: 0
-    }} animate={{
-      opacity: 1,
-      height: 'auto'
-    }} exit={{
-      opacity: 0,
-      height: 0
-    }} className="md:hidden bg-slate-800/95 backdrop-blur-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {['Features', 'How It Works', 'Pricing', 'Testimonials', 'Contact'].map(item => <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-700" onClick={() => setIsOpen(false)}>
-                {item}
-              </a>)}
-            <div className="mt-4 px-3 py-2">
-              <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2 px-4 rounded-full">
-                Book Demo
-              </button>
+        {mobileDrawerOpen && (
+          <div className="fixed right-0 z-20 bg-neutral-900 w-full p-12 flex flex-col justify-center items-center lg:hidden">
+            <ul>
+              <li className="py-4">
+                <a href="#">Features</a>
+              </li>
+              <li className="py-4">
+                <a href="#">Workflow</a>
+              </li>
+              <li className="py-4">
+                <a href="#">Pricing</a>
+              </li>
+              <li className="py-4">
+                <a href="#">Testimonials</a>
+              </li>
+            </ul>
+            <div className="flex space-x-6">
+              <a href="#" className="py-2 px-3 border rounded-md">
+                Sign In
+              </a>
+              <a
+                href="#"
+                className="py-2 px-3 rounded-md bg-gradient-to-r from-orange-500 to-orange-800"
+              >
+                Create an account
+              </a>
             </div>
           </div>
-        </motion.div>}
-    </nav>;
-}
+        )}
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
